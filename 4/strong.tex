@@ -1,0 +1,75 @@
+\section{Strong Markov Property}
+\begin{definition}
+    A random variable $T=\Omega\to\{0,1,\ldots\}\cup\{\infty\}$ is a stopping time if the event $\{T=n\}$ only depends on $X_0,\ldots,X_n$.
+\end{definition}
+\begin{example}
+    (a) The first passage time $T_j=\inf\{n\ge 1:X_n=j\}$ is a stopping time.\\
+    (b) The hitting time $H^A$ of a subset $A\subset I$ is a stopping time.\\
+    (c) (non-example) The last exit time of a subset $A\subset I$, defined by $L^A=\sup\{n\ge 0:X_n\in A\}$ is in general not a stopping time.
+\end{example}
+\begin{theorem}[Strong Markov Property]\label{strong_markov}
+    Let $(X_n)_{n\ge 0}$ be $\operatorname{Markov(\lambda,P)}$ and $T$ be a stopping time for $(X_n)$.
+    Then, conditional on $T<\infty$ and $X_T=i$, the sequence $(X_{T+n})_{n\ge 0}$ is $\operatorname{Markov}(\delta_i,P)$ and independent of $X_0,\ldots,X_T$.
+\end{theorem}
+\begin{proof}
+    Let $B$ be an event determined by $X_0,\ldots,X_T$, then $B\cap\{T=m\}$ is determined by $X_0,\ldots,X_m$.
+    So
+    \begin{align*}
+        &\phantom{=}\mathbb P[\{X_T=j_0,\ldots,X_{T=n}=j_n\}\cap B\cap\{T=m\}\cap\{X_T=i\}]\\
+        &=\mathbb P[X_T=j_0,\ldots,X_{T=n}=j_n]\mathbb P[B\cap\{T=m\}\cap\{X_T=i\}
+    \end{align*}
+    Summing over $m$ gives
+    \begin{align*}
+        &\phantom{=}\mathbb P[\{X_T=j_0,\ldots,X_{T=n}=j_n\}\cap B\cap\{T<\infty\}\cap\{X_T=i\}]\\
+        &=\mathbb P[X_T=j_0,\ldots,X_{T=n}=j_n]\mathbb P[B\cap\{T<\infty\}\cap\{X_T=i\}]
+    \end{align*}
+    If $\mathbb P[T<\infty,X_T=i]>0$, we then have
+    \begin{align*}
+        &\phantom{=}\mathbb P[\{X_T=j_0,\ldots,X_{T=n}=j_n\}\cap B|T<\infty,X_T=i]\\
+        &=\mathbb P[X_T=j_0,\ldots,X_{T=n}=j_n]\mathbb P[B|T<\infty,X_T=i]
+    \end{align*}
+    As desired.
+\end{proof}
+\begin{example}[Gambler's Ruin Continued]
+    Back to our previous example where for $i>0$, $p_{i,i+1}=p$ and $p_{i,i-1}=q=1-p$ and $p_{0,0}=1$.
+    We previously found the hitting probability of $\{0\}$.
+    We now want to find the distribution of time to hit it starting from $1$.
+    Let $H_j=\inf\{n\ge 0:X_n=j\}$ and
+    $$\phi(s)=\mathbb E[s^{H_0}]=\mathbb E[s^{H_0}1_{H_0<\infty}]=\sum_{n=0}^\infty s^n\mathbb P[H_0=n]$$
+    where $s\in [0,1)$.
+    We claim that $\mathbb E_2[s^{H_0}]=\phi(s)^2$.
+    To show this, we shall use the strong Markov property.
+    Conditional on $H_1<\infty$ under $\mathbb P_2$, we can write $H_0=H_1+\tilde{H}_0$ where $\tilde{H}_0$ is the time it takes after $H_1$ to reach state $0$.
+    Since $H_1$ is a stopping time, by applying Theorem \ref{strong_markov} on $H_1$ we get $\tilde{H}_0$ is independent of $H_1$ as it only depends on $(X_{H_1+n})_{n\ge 0}$, so
+    \begin{align*}
+        \mathbb E_2[s^{H_0}]&=\mathbb E_2[s^{H_1}|H_1<\infty]\mathbb E_2[s^{\tilde{H}_0}|H_1<\infty]\mathbb P[H_1<\infty]\\
+        &=\mathbb E_2[s^{H_1}1_{H_1<\infty}]\mathbb E_2[s^{\tilde{H}_0}|H_1<\infty]\\
+        &=\phi(s)^2
+    \end{align*}
+    Our second claim is that $ps\phi(s)^2-\phi(s)+qs=0$.
+    Conditional on $X_1=2$, we have $H_0=1+\bar{H}_0$ where $\bar{H}_0$ is the time takes after $1$ step to reach $0$.
+    Then $\bar{H}_0$ under $\mathbb P[\cdot|X_2=2]$ is the same distribution as $H_0$ under $\mathbb P_2$.
+    So
+    \begin{align*}
+        \phi(s)&=\mathbb E_1[s^{H_0}]\\
+        &=p\mathbb E_1[s^{H_0}|X_1=2]+q\mathbb E_1[s^{H_0}|X_1=0]\\
+        &=p\mathbb E_1[s^{1+\bar{H}_0}|X_1=2]+qs\\
+        &=ps\mathbb E_1[s^{\bar{H}_0}|X_1=2]+qs\\
+        &=ps\mathbb E_2[s^{H_0}]+qs\\
+        &=ps\phi(s)^2+qs
+    \end{align*}
+    which shows the claim.
+    This means that
+    $$\phi(0)=0,\phi(s)=\frac{1\pm\sqrt{1-4pqs^2}}{2ps},s>0$$
+    since $\phi(s)\le 1$ for all $s$ and $\phi$ is continuous, only the minus case is possible in the quadratic formula, so we get, for $s>0$,
+    $$s\mathbb P[H_0=1]+s^2\mathbb P[H_0=2]+\cdots=\phi(s)=\frac{1-\sqrt{1-4pqs^2}}{2ps}=qs+pq^2s^3+\cdots$$
+    In particular, $\mathbb P[H_0=1]=q,\mathbb P[H_0=2]=0,\ldots$.
+    In addition, as $s\to 1^-$, we have $\phi(s)\to\mathbb P_1[H_0<\infty]$, so
+    $$\mathbb P_1[H_0<\infty]=\frac{1-\sqrt{1-4pq}}{2p}=\begin{cases}
+        1\text{, if $p\le q$}\\
+        q/p\text{, if $p>q$}
+    \end{cases}$$
+    which is our previous result.
+    Also, in the case $p\le q$,
+    $$\mathbb E_1[H_0]=\mathbb E_1[H_01_{H_0<\infty}]=\lim_{s\to 1^-}\phi^\prime(s)=\lim_{s\to 1^-}\frac{p\phi(s)^2+q}{1-2ps\phi(s)}=\frac{1}{1-2p}=\frac{1}{q-p}$$
+\end{example}

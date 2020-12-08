@@ -1,0 +1,75 @@
+\section{Time Reversal}
+What if we reverse the time parameter in a Markov chain?
+Usually it will result in an absolute mess, however, if we restrict the initial distribution to be invariant, then we should be able to obtain something nontrivial (since at least we know the distribution at each step).
+\begin{theorem}
+    Let $P$ be irreducible with an invariant distribution $\pi$.
+    Suppose $(X_n)_{0\le n\le N}$ is $\operatorname{Markov}(\pi,P)$ and set $Y_n=X_{N-n}$, then $(Y_n)_{0\le n\le N}\sim\operatorname{Markov}(\pi,\hat{P})$ where $\hat{P}=(\hat{p}_{ij})$ satisfying $\pi_j\hat{p}_{ji}=\pi_ip_{ij}$.
+    In addition, $\hat{P}$ is irreducible and has invariant distribution $\pi$.
+\end{theorem}
+\begin{proof}
+    $\hat{P}$ is well-defined and is a stochastic matrix since $\pi_j\neq 0$ for any $j$ (as $P$ is irreducible).
+    Indeed,
+    $$\sum_{i\in I}\hat{p}_{ji}=\frac{1}{\pi_j}\sum_{i\in I}\pi_ip_{ij}=\frac{\pi_j}{\pi_j}=1$$
+    Also,
+    $$\sum_{j\in I}\pi_j\hat{p}_{ij}=\sum_{j\in I}\pi_ip_{ij}=\pi_i$$
+    so $\pi$ is indeed an invariant distribution for $(Y_n)$.
+    Now
+    \begin{align*}
+        \mathbb P[Y_0=i_0,\ldots,Y_N=i_n]&=\mathbb P[X_0=i_N,\ldots,X_N=i_0]\\
+        &=\pi_{i_N}p_{i_Ni_{N-1}}\cdots p_{i_1i_0}\\
+        &=\pi_{i_{N-1}}\hat{p}_{i_{N-1}i_N}p_{i_{N-1}i_{N-2}}\cdots p_{i_1i_0}\\
+        &=\cdots\\
+        &=\pi_{i_0}\hat{p}_{i_0i_1}\cdots\hat{p}_{i_{N-1}i_N}
+    \end{align*}
+    which shows $(Y_n)\sim\operatorname{Markov}(\pi,\hat{P})$ due to Theorem \ref{markov_alt_defn}.\\
+    To see $\hat{P}$ is irreducible, for any $i,j\in I$ there is a sequence $i_0=i,i_1,\ldots,i_n=j$ such that $p_{i_0i_1}\cdots p_{i_{n-1}i_n}>0$ by the irreducibility of $P$.
+    So
+    $$\hat{p}_{i_0i_1}\cdots \hat{p}_{i_{n-1}i_n}=\frac{\pi_{i_0}}{\pi_{in}}p_{i_0i_1}\cdots p_{i_{n-1}i_n}>0$$
+    which shows the irreducibility of $\hat{P}$.
+\end{proof}
+\begin{definition}
+    A stochastic matrix $P$ and a measure $\lambda$ are said to be in detailed balance if $\forall i,j\in I,\lambda_ip_{ij}=\lambda_jp_{ji}$.
+\end{definition}
+\begin{lemma}
+    If $P,\lambda$ are in detailed balance, then $\lambda$ is invariant for $P$.
+\end{lemma}
+\begin{proof}
+    Just write it out: $\sum_{i\in I}\lambda_ip_{ij}=\sum_{i\in I}\lambda_jp_{ji}=\lambda_j$.
+\end{proof}
+\begin{definition}
+    Let $P$ be irreducible and $(X_n)\sim\operatorname{Markov}(\lambda,P)$.
+    Then $(X_n)$ is reversible if the sequence $(X_{N-n})_{0\le n\le N}$ is also $\operatorname{Markov}(\lambda,P)$ for all $N$.
+\end{definition}
+\begin{theorem}
+    Let $P$ be irreducible and $\lambda$ be a distribution.
+    Suppose $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then the followings are equivalent:\\
+    (a) $(X_n)$ is reversible.\\
+    (b) $P,\lambda$ are in detailed balance.
+\end{theorem}
+\begin{proof}
+    Both (a) and (b) imply that $\lambda$ is invariant, so we might as well assume that.
+    By the preceding theorem, both conditions are equivalent to $P=\hat{P}$.
+\end{proof}
+\begin{example}
+    Consider the Markov chain on $\{0,\ldots,M\}$ such that $p_{0,1}=p, p_{0,0}=q,p_{M,M}=p,p_{M,M-1}=q$ and for $i\in\{1,\ldots,M-1\}$, $p_{i,i+1}=p, p_{i,i-1}=q$ for some fixed $p\in (0,1),q=1-p$.
+    Then $\lambda_ip_{i,i+1}=\lambda_{i+1}p_{i+1,i}$ iff $\lambda_i=C(p/q)^i$ for some constant $C$.
+    Choosing $C$ that normalises $\lambda_i$ gives an invariant distribution that is in detailed balance with $P$, so the chain started there is reversible.
+\end{example}
+\begin{example}[Random Walk on Graphs]
+    For a finite connected graph, there is a natural structure of Markov chain on it with transition probabilities (noting a vertex is not neighbouring itself)
+    $$p_{ij}=\begin{cases}
+        1/\deg i\text{, if $i,j$ are neighbours}\\
+        0\text{, otherwise}
+    \end{cases}$$
+    This is known as a random walk on this graph.
+    Easily $P$ is irreducible by connectedness and $P$ is in detailed balance with $(v_i)=(\deg i)$ as $v_ip_{ij}=1=v_jp_{ji}$.
+\end{example}
+\begin{example}[Non-example]
+    Consider
+    $$P=\begin{pmatrix}
+        0&2/3&1/3\\
+        1/3&0&2/3\\
+        2/3&1/3&0
+    \end{pmatrix}$$
+    Then the distribution $\pi=(1/3,1/3,1/3)$ is invariant but not reversible.
+\end{example}

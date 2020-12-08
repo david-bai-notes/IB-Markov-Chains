@@ -1,0 +1,152 @@
+\section{Hitting and Absorption Probabilities}
+\begin{definition}
+    Let $(X_n)$ be a Markov chain.\\
+    Then hitting time $H^A$ of a set $A\subset I$ is the random variable $\Omega\to\{0,1,\ldots\}\cup\{\infty\}$ given by $H^A(\omega)=\inf\{n\ge 0:X_n(\omega)\in A\}$ where $\inf\varnothing=+\infty$ by convention.\\
+    The hitting probability of $A$ is
+    $$h_i^A=\mathbb P_i[H^A<\infty]=\mathbb P_i[\text{hit $A$}]$$
+    If $A$ is a closed class, $h_i^A$ is called the absorption probability.\\
+    The mean hitting time is the expected time to reach $A$.
+    $$k_i^A=\mathbb E_i[H^A]=\mathbb E[\text{time to hit $A$}]$$
+\end{definition}
+\begin{example}
+    Consider the Markov chain with transition matrix
+    $$\begin{pmatrix}
+        1&&&\\
+        1/2&&1/2&\\
+        &1/2&&1/2\\
+        &&&1
+    \end{pmatrix}$$
+    Observe that $\{1\},\{4\}$ are absorbing classes.
+    Starting from $2$, we want to know the probability of absorption in $\{4\}$ and the average time before the chain is absorbed in $\{1\}$ and $\{4\}$.\\
+    Let $h_i=h_i^{\{4\}}$ and $k_i=k_i^{\{1,4\}}$.\\
+    Obviously $h_1=0$ and $h_4=1$.
+    We have $h_2=h_1/2+h_3/2=h_3/2$ and $h_3=h_2/2+h_4/2=h_2/2+1/2$, solving which gives $h_2=1/3$.\\
+    For $k$'s, we have $k_1=k_4=0$ and $k_2=1+k_1/2+k_3/2=1+k_3/2$, $k_3=1+k_2/2+k_4/2=1+k_2/2$.
+    Solve for $k_2$ gives $k_2=2$.
+\end{example}
+We want to systematise our computation.
+This inspires the following theorem:
+\begin{theorem}
+    The vector $h^A$ of hitting probabilities is the minimal nonnegative solution to the system
+    $$\begin{cases}
+        h_i^A=1\text{, for $i\in A$}\\
+        h_i^A=\sum_{j\in I}p_{ij}h_j^A\text{, otherwise}
+    \end{cases}$$
+    We need it to be minimal in the sense that if $x=(x_i)_{i\in A}$ is another nonnegatve solution, then $x_i\ge h_i^A$ for all $i\in I$.
+\end{theorem}
+\begin{proof}
+    $h^A$ is obviously a solution to the system.
+    Indeed, if $X_0=i\in A$ it is obvious.
+    Otherwise $X_0=i\notin A$, then by the Markov property,
+    $$\mathbb P_i[H^A<\infty|X_1=j]=\mathbb P_j[H^A<\infty]=h_j^A$$
+    So
+    \begin{align*}
+        h_i^A&=\mathbb P_i[H^A<\infty]\\
+        &=\sum_{j\in I}\mathbb P_i[H^A<\infty|X_1=j]\mathbb P_i[X_1=j]\\
+        &=\sum_{j\in I}h_j^Ap_{ij}
+    \end{align*}
+    To see it is minimal, let $x$ be any nonnegative solution to the system.
+    If $i\in A$ we clearly have $x_i=1\ge 1=h_i^A$.
+    For $i\notin A$, then
+    \begin{align*}
+        x_i&=\sum_{j\in I}p_{ij}x_j=\sum_{j\in A}p_{ij}x_j+\sum_{j\notin A}p_{ij}x_j\\
+        &=\sum_{j\in A}p_{ij}+\sum_{j\notin A}p_{ij}\left( \sum_{k\in A}p_{jk}+\sum_{k\notin A}p_{jk}x_k \right)\\
+        &=\mathbb P_i[X_1\in A]+\mathbb P_i[X_1\notin A,X_2\in A]+\sum_{j\notin A,k\notin A}p_{ij}p_{jk}x_k\\
+        &=\cdots\\
+        &=\sum_{s=1}^n\mathbb P[X_t\notin A\text{ for $t<s$},X_s\in A]+\sum_{j_1,\ldots,j_n\notin A}p_{ij_1}p_{j_1j_2}\cdots p_{j_{n-1}}p_{j_n}x_{j_n}\\
+        &=\mathbb P_i[H^A\le n]+\sum_{j_1,\ldots,j_n\notin A}p_{ij_1}p_{j_1j_2}\cdots p_{j_{n-1}}p_{j_n}x_{j_n}\\
+        &\ge\mathbb P_i[H^A\le n]
+    \end{align*}
+    So $x_i\ge \mathbb P_i[H^A\ge n]$ for all $n$, therefore
+    $$x_i\ge\lim_{n\to\infty}P_i[H^A\le n]=\mathbb P_i[H^A<\infty]=h_i^A$$
+    Therefore $h^A$ is minimal.\\
+    To finish off the proof, observe that the system must has a solution since $h^A$ is one, and the solution obtained in this way must be $h^A$ since the minimality condition guaranteed uniqueness.
+\end{proof}
+\begin{example}
+    Consider our previous example with transition matrix
+    $$\begin{pmatrix}
+        1&&&\\
+        1/2&&1/2&\\
+        &1/2&&1/2\\
+        &&&1
+    \end{pmatrix}$$
+    Then the system in the above theorem is
+    $$\begin{cases}
+        h_1=h_1\\
+        h_4=1\\
+        h_2=h_1/2+h_3/2\\
+        h_3=h_2/2+h_4/2
+    \end{cases}$$
+    which is what we obtained eariler except that it does not determine $h_1$.
+    By the minimality condition we can then choose $h_1=0$ and get the results we got earlier.
+\end{example}
+\begin{example}[Gambler's Ruin]
+    Consider the Markov chain with $\mathbb N\cup\{0\}$ many states where for any $i$, $p_{i,i+1}=p$ and $p_{i+1,i}=q=1-p$ for some fixed $p\in(0,1)$ and $p_{0,0}=1$.
+    We want to know the absorption probability $h_i=h_i^{\{0\}}$.
+    We can use this to model a casino, where a gambler with initial fortune $i$ wants to know the probability of him going broke.
+    By the theorem, the system we need is
+    $$\begin{cases}
+        h_0=1\\
+        h_i=ph_{i+1}+qh_{i-1},i>0
+    \end{cases}$$
+    Assuming $p\neq q$, then one can easily get the general solution to be $h_i=A+B(q/p)^i$ for constants $A,B$.
+    For $p<q$ (which is the actual situation in most casino), then $0\le h_i\le 1$ gives $B=0$ and $A=1$ which means $h_i=1$ for all $i$.
+    If $p>q$, then $h_0=1$ gives $B=1-A$, so
+    $$h_i=\left( \frac{q}{p} \right)^i+A\left( 1-\left( \frac{q}{p} \right)^i \right)$$
+    As $h_i\ge 0$ for all $i$, we have $A\ge 0$.
+    The minimality condition then gives $A=0$, so $h_i=(q/p)^i$.\\
+    If $p=q=1/2$, then the general solution for the recursion is $h_i=A+Bi$ for constants $A,B$.
+    We can put in the initial conditions as usual and obtain $h_i=1$ for all $i$.
+\end{example}
+\begin{example}[Birth and Death Chain]
+    Again take the state space as the nonnegative integers.
+    For $i>0$, we set $p_{i,i+1}=p_1$ and $p_{i,i-1}=q_1=1-p_1$ where $p_i\in (0,1)$ for all $i$.
+    Set $p_{0,0}=1$ as usual.
+    We again want to know the absorbing probability $h_i=h_i^{\{0\}}$ which can be interpreted as the extinction probability.
+    Now the theorem told us
+    $$\begin{cases}
+        h_0=1\\
+        h_i=p_ih_{i+1}+q_ih_{i-1},i>0
+    \end{cases}$$
+    Consider $u_i=h_{i-1}-h_i$, then for $i>0$,
+    $$p_iu_{i+1}-q_iu_i=p_ih_i-p_ih_{i+1}-q_ih_{i-1}+q_ih_i=(p_i+q_i-1)h_i=0$$
+    So we have
+    $$u_{i+1}=\frac{q_i}{p_i}u_i=\left( \frac{q_iq_{i-1}\cdots q_1}{p_ip_{i-1}\cdots p_1} \right)u_1=\gamma_iu_1,\gamma_i=\frac{q_iq_{i-1}\cdots q_1}{p_ip_{i-1}\cdots p_1}$$
+    Hence we have
+    $$h_i=1-(h_0-h_i)=1-A(\gamma_0+\cdots +\gamma_{i-1}),\gamma_0=1,A=u_1$$
+    If $\sum_i\gamma_i=\infty$, then $h_i\in [0,1]$ gives $A=0$, so $h_i=1$ for all $i$.
+    Otherwise $\gamma=\sum_i\gamma_i\in\mathbb R_+$, so by minimality $A=\gamma^{-1}$.
+    Hence,
+    $$h_i=\frac{\sum_{j=i}^\infty\gamma_j}{\sum_{j=0}^\infty\gamma_j}$$
+    In particular, for any $i$, we always have $h_i\in (0,1)$, so the population survives or dies both with positive probability.
+\end{example}
+We've investigated a lot on hitting probability, but what about mean hitting time?
+\begin{theorem}
+    The vector of mean hitting times $k^A=(k_i^A)_{i\in I}$ is the minimal solution to
+    $$\begin{cases}
+        k_i^A=0,i\in A\\
+        k_i^A=1+\sum_{j\notin A}p_{ij}k_j^A,i\notin A
+    \end{cases}$$
+\end{theorem}
+The proof is quite analogous to the previous theorem on hitting time.
+\begin{proof}
+    The same idea as in hitting time works to show that $k^A$ is indeed a solution.
+    If $X_0=i\in A$ then obvously $k_i^A=0$.
+    Otherwise $X_0=i\notin A$, so by the Markov property
+    $$\mathbb E_i[H^A|X_1=j]=1+\mathbb E_j[H^A]=1+k_j^A$$
+    Therefore
+    $$k_i^A=\mathbb E_i[H^A]=\sum_{j\in I}\mathbb E_i[H^A|X_1=j]\mathbb P_i[X_1=j]=\sum_{j\in I}(1+k_j^A)p_{ij}=1+\sum_{j\in I}k_j^Ap_{ij}$$
+    To show this solution is minimal, assume $x$ is any other nonegative solution, then $x_i=0\ge 0=k_i^A$ for any $i\in A$.
+    For $i\notin A$,
+    \begin{align*}
+        x_i&=1+\sum_{j\notin A}p_{ij}x_j\\
+        &=1+\sum_{j\notin A}p_{ij}\left( 1+\sum_{k\notin A}p_{jk}x_k \right)\\
+        &=\mathbb P_i[H^A\ge 1]+\mathbb P_i[H^A\ge 2]+\sum_{j\notin A,k\notin A}p_{ij}p_{jk}x_k\\
+        &=\cdots\\
+        &=\sum_{s=1}^n\mathbb P_i[H^A\ge s]+\sum_{j_1,\ldots,j_n\notin A}p_{ij_1}\cdots p_{j_{n-1}j_n}x_{j_n}\\
+        &\ge\sum_{s=1}^n\mathbb P_i[H^A\ge s]\ge\sum_{s=1}^\infty\mathbb P_i[H^A\ge s]\\
+        &=\mathbb E_i[H^A]=k_i^A
+    \end{align*}
+    which shows the minimality.
+    The proof can be finished off in the same way as we did for the previous theorem.
+\end{proof}

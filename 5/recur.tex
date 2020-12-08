@@ -1,0 +1,144 @@
+\section{Recurrence and Transience}
+\begin{definition}
+    Let $(X_n)$ be a Markov chain.
+    A state $i\in I$ is recurrent if
+    $$\mathbb P_i[X_n=i\text{ infinitely often}]=1$$
+    It is transient if
+    $$\mathbb P_i[X_n=i\text{ infinitely often}]=0$$
+\end{definition}
+Recall the first passage time to $j$ is $T_j=\inf\{n\ge 1:X_n=j\}$.
+\begin{theorem}\label{recur_trans}
+    If $\mathbb P_i[T_i<\infty]=1$, then $i$ is recurrent and
+    $$\sum_{n=0}^\infty p_{ii}^{(n)}=\infty$$
+    Otherwise, $i$ is transient and
+    $$\sum_{n=0}^\infty p_{ii}^{(n)}<\infty$$
+\end{theorem}
+\begin{corollary}
+    Any state is either recurrent or transient, but not both.
+\end{corollary}
+\begin{proof}
+    Immediate from the theorem.
+\end{proof}
+To prove the theorem, we need to do some ground work.
+Inductively, we define the $r^{th}$ passage time to $j$ to be $T_j^{(0)}=0$ and
+$$T_j^{(r+1)}=\inf\{n\ge T_j^{(r)}+1:X_n=j\}$$
+Easily $T_j^{(1)}=T_j$.
+The length of the $r^{th}$ excursion is defined by
+$$S_i^{(r)}=\begin{cases}
+    T_i^{(r)}-T_i^{(r-1)}\text{, if $T_i^{(r-1)}<\infty$}\\
+    0\text{, otherwise}
+\end{cases}$$
+\begin{lemma}\label{tisi}
+    For $r=2,3,\ldots$, conditional on $T_i^{(r-1)}<\infty$, the length of the $r^{th}$ excursion $S_i^{(r)}$ is independent of $\{X_m:m<T_i^{(r-1)}\}$ and
+    $$\mathbb P[S_i^{(r)}=n|T_i^{(r-1)}<\infty]=\mathbb P_i[T_i=n]$$
+\end{lemma}
+\begin{proof}
+    Quite obvious, but let's write it.
+    Conditional on $T_i^{(r-1)}<\infty$, by Theorem \ref{strong_markov}, we have
+    $$(X_{T_i^{(r-1)}+n})_{n\ge 0}\sim\operatorname{Markov}(\delta_i,P)$$
+    and is independent of $X_0,\ldots,X_{T_i^{(r-1)}}$.
+    Now we can rewrite
+    $$S_i^{(r)}=\inf\{n\ge 1:X_{T_i^{(r-1)}+n}=i\}$$
+    which makes it the first passage time of $(X_{T_i^{(r-1)}+n})_{n\ge 0}$.
+    We are essentially done.
+\end{proof}
+Now let $V_i$ denote the number of visits to $i$, that is
+$$V_i=\sum_{n=0}^\infty 1_{X_n=i}\implies \mathbb E_i[V_i]=\mathbb E_i\left[ \sum_{n=0}^\infty 1_{X_n=i} \right]=\sum_{n=0}^\infty\mathbb P_i[X_n=i]=\sum_{n=0}^\infty p_{ii}^{(n)}$$
+Let $f_i$ be the return probability to $i$, that is $f_i=\mathbb P_i[T_i<\infty]$.
+\begin{lemma}\label{vifi}
+    For $r=0,1,2,\ldots$, we have $\mathbb P_i[V_i>r]=f_i^r$.
+\end{lemma}
+\begin{proof}
+    Note that $\{V_i>r\}=\{T_i^{(r)}<\infty\}$ if $X_0=i$.
+    Also note that $\mathbb P_i[V_i>0]=1$.
+    If $\mathbb P_i[V_i>r]=f_i^r$ for some $r$, then by Lemma \ref{tisi},
+    \begin{align*}
+        \mathbb P_i[V_i>r+1]&=\mathbb P_i[T_i^{(r+1)}<\infty]\\
+        &=\mathbb P_i[T_i^{(r)}<\infty,S_i^{(r+1)}<\infty]\\
+        &=\mathbb P_i[T_i^{(r)}<\infty]\mathbb P[S_i^{(r+1)}<\infty|T_i^{(r)}<\infty]\\
+        &=f_i^rf_i=f_i^{r+1}
+    \end{align*}
+    We conclude this by induction.
+\end{proof}
+\begin{proof}[Proof of Theorem \ref{recur_trans}]
+    If $\mathbb P_i[T_i<\infty]=1$, then by Lemma \ref{vifi},
+    $$\mathbb P_i[V_i=\infty]=\lim_{r\to\infty}\mathbb P_i[V_i>r]=1$$
+    So $i$ is recurrent and $\sum_{n}p_{ii}^{(n)}=\mathbb E_iV_i=\infty$.\\
+    Otherwise, $\mathbb P_i[T_i<\infty]<1$, then
+    $$\sum_{n=0}^\infty p_{ii}^{(n)}=\mathbb E_iV_i=\sum_{r=0}^\infty\mathbb P_i[V_i>r]=\sum_{i=0}^\infty f_i^r=\frac{1}{1-f_i}<\infty$$
+    In particular $\mathbb P_i[V_i=\infty]=0$, hence $i$ is transient.
+\end{proof}
+\begin{theorem}
+    Recurrence and transience are class properties.
+    That is, in any communicating class, either all states there is recurrent or all are transient.
+\end{theorem}
+\begin{proof}
+    Let $i,j\in C$ and assume that $i$ is transient.
+    Since $i,j$ communicate, there is some $n,m$ such that $p_{ij}^{(n)}>0,p_{ji}^{(m)}>0$.
+    Then, for all $r\ge 0$ we have $p_{ii}^{(n+m+r)}\ge p_{ij}^{(n)}p_{jj}^{(r)}p_{ji}^{(m)}$.
+    Assuming the transience of $i$, then
+    $$\sum_{r=0}^\infty p_{jj}^{(r)}\le\frac{1}{p_{ij}^{(n)}p_{ji}^{(m)}}\sum_{r=0}^\infty p_{ii}^{(n+m+r)}<\infty$$
+    So $j$ is transient.
+    This is sufficient to imply the theorem.
+\end{proof}
+\begin{definition}
+    A recurrent class is a communicating class which contains a recurrent state.
+\end{definition}
+By the preceding theorem, any state in a recurrent class is recurrent.
+\begin{theorem}\label{recur_closed}
+    Every recurrent class is closed.
+\end{theorem}
+\begin{proof}
+    Let $C$ be a class that is not closed, then there is $i\in C,j\notin C$ and $m\ge 1$ such that $\mathbb P_i[X_m=j]>0$.
+    Since $C$ is a communicating class and $j\notin C$,
+    $$\mathbb P_i[\{X_m=j\}\cap\{X_n=i\text{ infinitely often}\}]=0$$
+    So
+    \begin{align*}
+        \mathbb P_i[X_n=i\text{ infinitely often}]&=\sum_{j\in I}\mathbb P_i[\{X_m=j\}\cap\{X_n=i\text{ infinitely often}\}]\\
+        &<\sum_{j\in I}\mathbb P_i[X_m=j]\\
+        &=1
+    \end{align*}
+    So $i$ is transient, therefore not recurrent, as desired.
+\end{proof}
+\begin{theorem}\label{fin_closed_recur}
+    Every finite closed class is recurrent.
+\end{theorem}
+Note that infinite closed classes can be transient.
+\begin{proof}
+    Start with any finite closed class $C$ and suppose $X_0\in C$.
+    Then for some $i\in C$,
+    \begin{align*}
+        0&<\mathbb P[X_n=i\text{ infinitely often}]\\
+        &=\mathbb P[X_n=i\text{ for some $n$}]\mathbb P_i[X_n=i\text{ infinitely often}]
+    \end{align*}
+    by Theorem \ref{strong_markov}.
+    Hence
+    $$\mathbb P_i[X_n=i\text{ infinitelty often}]>0$$
+    Hence $i$ is not transient, so $i$ is recurrent, therefore $C$ is recurrent.
+\end{proof}
+\begin{corollary}
+    Finite classes are recurrent if and only if they are closed.
+\end{corollary}
+\begin{proof}
+    Combine Theorem \ref{recur_closed} and Theorem \ref{fin_closed_recur}.
+\end{proof}
+\begin{theorem}
+    Suppose a Markov chain $P$ is irreducible and recurrent.
+    Then for all $j\in I$, $\mathbb P[T_j<\infty]=1$.
+\end{theorem}
+\begin{proof}
+    It suffices to show that $\mathbb P_i[T_j<\infty]=1$ for all $i\in I$ since that would imply
+    $$\mathbb P[T_j<\infty]=\sum_{i\in I}\mathbb P[X_0=i]\mathbb P_i[T_j<\infty]=1$$
+    As $P$ is irreducible, there is $m$ such that $p_{ji}^{(m)}>0$.
+    Since $P$ is recurrent,
+    $$1=\mathbb P_j[X_n=j\text{ infinitely often}]\le \mathbb P_j[X_n=j\text{ for some $n\ge m+1$}]$$
+    So it implies the right hand side is $1$.
+    Expanding it gives
+    \begin{align*}
+        1&=\sum_{k\in I}\mathbb P[X_n=j\text{ for some $n\ge m+1$}|X_m=k]\mathbb P_j[X_m=k]\\
+        &=\sum_{k\in I}\mathbb P_k[X_n=j\text{ for some $n\ge 1$}]p_{jk}^{(m)}\\
+        &=\sum_{k\in I}\mathbb P_k[T_j<\infty]p_{jk}^{(m)}
+    \end{align*}
+    Consequently $\mathbb P_k[T_j<\infty]=1$ for any $k\in I$.
+    This completes the proof.
+\end{proof}

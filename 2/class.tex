@@ -1,0 +1,42 @@
+\section{Class Structure}
+\begin{definition}
+    For $i,j\in I$, we say $i$ leads to $j$ (or sometimes $i\rightarrow j$) if $\mathbb P_i[\exists n,X_n=j]>0$ for some $n$.\\
+    We say $i$ communicates with $j$ (or sometimes $i\leftrightarrow j$) if $i\rightarrow j$ and $j\rightarrow i$.
+\end{definition}
+This definition, as were most definitions in maths, is motivated by a theorem.
+\begin{theorem}
+    For $i\neq j$ the followings are equivalent:\\
+    (a) $i\rightarrow j$.\\
+    (b) $p_{i_1i_2}\cdots p_{i_{n-1}i_n}>0$ for some $i_1,\ldots,i_n$ with $i_1=i$ and $i_n=j$.\\
+    (c) $p_{ij}^{(n)}>0$ for some $n$.
+\end{theorem}
+\begin{proof}
+    Quite obvious.
+\end{proof}
+\begin{proposition}
+    The relation $\leftrightarrow$ is an equivalence relation.
+\end{proposition}
+\begin{proof}
+    Reflexivity and symmetry are straight from definition.
+    Transitivity follows from the preceding theorem.
+\end{proof}
+\begin{definition}
+    The equivalence classes of $\leftrightarrow$ is called the communicating classes of the Markov chain.\\
+    A Markov chain is irreducible if there is only one communicating class in it.
+\end{definition}
+\begin{definition}
+    A subset $C\subset I$ of the state space is closed if $i\in C$ and $i\rightarrow j$ implies $j\in C$.\\
+    A state $i\in I$ is absorbing if $\{i\}$ is closed.
+\end{definition}
+\begin{example}
+    Take the Markov chain with transition matrix
+    $$\begin{pmatrix}
+        1/2&1/2&&&\\
+        &&1&&&\\
+        1/3&&&1/3&1/3&\\
+        &&&1/2&1/2&\\
+        &&&&&1\\
+        &&&&1&
+    \end{pmatrix}$$
+    By observation, the communicating classes are $\{1,2,3\},\{4\},\{5,6\}$ and only $\{5,6\}$ is closed.
+\end{example}

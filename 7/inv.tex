@@ -1,0 +1,163 @@
+\section{Invariant Measures}
+\begin{definition}
+    A measure is a tuple $(\lambda_i)_{i\in I}$ with $\lambda_i\ge 0$ for all $i\in I$.\\
+    A measure $\lambda$ is invariant (or stationary/equilibrium) if $\lambda P=\lambda$.
+\end{definition}
+\begin{theorem}
+    Let $(X_n)_{n\ge 0}\sim\operatorname{Markov}(\lambda,P)$.
+    Suppose $\lambda$ is invariant.
+    Then $(X_{n+m})_{n\ge 0}$ is also $\operatorname{Markov}(\lambda,P)$.
+\end{theorem}
+\begin{proof}
+    Quite obvious, but let's check.
+    For any $i$ we have, by definition,
+    $$\mathbb P[X_m=i]=(\lambda P^m)_i=\lambda_i$$
+    So the initial distribution of $(X_{n+m})_{n\ge 0}$ is $\lambda$.
+    Also, conditional on $X_{n+m}=i$, by the Markokv property of $(X_n)$, $X_{n+m+1}$ is independent of $X_m,\ldots,X_{n+m}$ and it has distribution $(p_{ij})_{j\in I}$.
+\end{proof}
+\begin{theorem}\label{power_inv}
+    Suppose $I$ is finite.
+    If there is some $i\in I$ such that $p_{ij}^{(n)}\to\pi_j$ as $n\to\infty$ for any $j\in I$, then $(\pi_j)$ is an invariant distribution.
+\end{theorem}
+\begin{proof}
+    It is obviously a distribution as
+    $$\sum_{j\in I}\pi_j=\sum_{j\in I}\lim_{n\to\infty}p_{ij}^{(n)}=\lim_{n\to\infty}\sum_{j\in I}p_{ij}^{(n)}=1$$
+    since $I$ is finite.
+    To see it is invariant,
+    \begin{align*}
+        \pi_j&=\lim_{n\to\infty}p_{ij}^{(n)}=\lim_{n\to\infty}p_{ij}^{(n+1)}=\lim_{n\to\infty}\sum_{k\in I}p_{ik}^{(n)}p_{kj}=\sum_{k\in I}p_{kj}\lim_{n\to\infty}p_{ik}^{(n)}\\
+        &=\sum_{k\in I}p_{kj}\pi_k=(\pi P)_j
+    \end{align*}
+    again because $I$ is finite.
+\end{proof}
+\begin{remark}
+    The theorem fails in general for infinite $I$.
+    Take for example the simple symmetric random walk on $\mathbb Z^d$.
+    We have $p_{ij}^{(n)}\to 0$ as $n\to\infty$ for any $i,j\in\mathbb Z^d$ but $(0,0,0,\ldots)$ is not a distribution (even though it is invariant).
+\end{remark}
+\begin{example}
+    Take
+    $$P=\begin{pmatrix}
+        1-\alpha&\alpha\\
+        \beta&1-\beta
+    \end{pmatrix}$$
+    We already know that
+    $$p_{11}^{(n)}=\begin{cases}
+        \beta/(\alpha+\beta)+\alpha(1-\alpha-\beta)^n/(\alpha+\beta)\text{, if $\alpha+\beta>0$}\\
+        1\text{, otherwise}
+    \end{cases}$$
+    So if $\alpha+\beta\notin\{0,1\}$, we have $p_{11}^{(n)}\to\beta/(\alpha+\beta)$, similarly
+    $$P^n\to\frac{1}{\alpha+\beta}\begin{pmatrix}
+        \beta&\alpha\\
+        \beta&\alpha
+    \end{pmatrix},n\to\infty$$
+    Hence $(\beta/(\alpha+\beta),\alpha/(\alpha+\beta))$ is an invariant distribution.
+\end{example}
+Usually we cannot easily compute the entries of $P^n$ and take the limit to find an invariant distribution.
+However, there is an obvious other way to get one.
+\begin{example}
+    Consider
+    $$P=\begin{pmatrix}
+        0&1&0\\
+        0&1/2&1/2\\
+        1/2&0&1/2
+    \end{pmatrix}$$
+    So if we want $\pi P=\pi$, it gives the set of linear equations
+    $$\begin{cases}
+        \pi_1=\pi_3/2\\
+        \pi_2=\pi_1+\pi_2/2\\
+        \pi_3=\pi_2/2+\pi_3/2
+    \end{cases}$$
+    which we can solve to get $\pi_1=1/5,\pi_2=\pi_3=2/5$ which is indeed an invariant distribution.
+\end{example}
+\begin{definition}
+    For each state $k\in I$, let $\gamma_i^k$ be the expected time spent in the state $i$ between two visits to $k$, so
+    $$\gamma_i^k=\mathbb E_k\sum_{n=0}^{T_k-1}1_{X_n=i}=\mathbb E_k\sum_{n=1}^{T_k}1_{X_n=i}$$
+\end{definition}
+\begin{theorem}
+    Let $P$ be irreducible and recurrent, then:\\
+    (a) $\gamma_k^k=1$.\\
+    (b) $\gamma^k=(\gamma_i^k)_{i\in I}$ is an invariant measure.\\
+    (c) $0<\gamma_i^k<\infty$ for all $i\in I$.
+\end{theorem}
+\begin{proof}
+    (a) is obvious.
+    For (b), since $P$ is recurrent, we know $\mathbb P_k[T_k<\infty]=1$, so for $j\neq k$,
+    \begin{align*}
+        \gamma_j^k&=\mathbb E_k\sum_{n=1}^{T_k}1_{X_n=j}=\mathbb E_k\sum_{n=1}^\infty 1_{X_n=j,n\le T_k}\\
+        &=\sum_{n=1}^\infty\mathbb P_k[X_n=j,n\le T_k]\\
+        &=\sum_{j\in I}\sum_{n=1}^\infty\mathbb P_k[X_{n-1}=i,X_n=j,n\le T_k]\\
+        &=\sum_{j\in I}\sum_{n=1}^\infty\mathbb P_k[X_{n-1}=i,n\le T_k]\mathbb P[X_n=j|X_{n-1}=i]\\
+        &=\sum_{j\in I}p_{ij}\sum_{n=1}^\infty\mathbb P_k[X_{n-1}=i,n\le T_k]\\
+        &=\sum_{j\in I}p_{ij}\sum_{n=1}^\infty\mathbb E_k[1_{X_{n-1}=i,n\le T_k}]\\
+        &=\sum_{j\in I}p_{ij}\mathbb E_k\sum_{n=0}^{T_k-1}1_{X_n=i}\\
+        &=\sum_{i\in I}p_{ij}\gamma_i^k=(\gamma^kP)_j
+    \end{align*}
+    For (c), as $P$ is irreducible, there is $n,m\ge 0$ such that $p_{ik}^{(n)}>0,p_{ki}^{(m)}>0$.
+    So by (b) and (a),
+    $$\gamma_i^k\ge\gamma_k^kp_{ki}^{(m)}=p_{ki}^{(m)}>0,1=\gamma_k^k\ge\gamma_i^kp_{ik}^{(n)}\implies \gamma_i^k\le\frac{1}{p_{ik}^{(n)}}<\infty$$
+    As desired.
+\end{proof}
+This theorem has a partial inverse.
+\begin{theorem}\label{inv_measure_exp}
+    Let $P$ be irreducible and $\lambda$ be an invariant measure with $\lambda_k=1$ for some $k$.
+    Then $\lambda_i\ge\gamma_i^k$ for every $i$.\\
+    If in addition $P$ is recurrent, then $\lambda=\gamma^k$.
+\end{theorem}
+\begin{proof}
+    Since $\lambda$ is invariant, for $j\neq k$,
+    \begin{align*}
+        \lambda_j&=\sum_{i_1\in I}\lambda_{i_1}p_{i_1j}\\
+        &=\sum_{i_1\neq k}\lambda_{i_1}p_{i_1j}+p_{kj}\\
+        &=\sum_{i_1\neq k}\left( \sum_{i_2\neq k}\lambda_{i_2}p_{i_2i_1}+p_{ki_1} \right)p_{i_1j} +p_{kj}\\
+        &=\cdots\\
+        &=\sum_{i_1,\ldots,i_n\neq k}\lambda_{i_n}p_{i_ni_{n-1}}\cdots p_{i_1j}\\
+        &\quad+\left( p_{kj}+\sum_{i_1\neq k}p_{ji_1}p_{i_1k}+\cdots\sum_{i_1,\ldots,i_{n-1}\neq k}p_{ki_{n-1}}\cdots p_{i_2i_1}p_{i_1j} \right)\\
+        &\ge p_{kj}+\sum_{i_1\neq k}p_{ji_1}p_{i_1k}+\cdots\sum_{i_1,\ldots,i_{n-1}\neq k}p_{ki_{n-1}}\cdots p_{i_2i_1}p_{i_1j}\\
+        &=\mathbb P_k[X_1=j,T_k\ge 1]+\mathbb P_k[X_2=j,T_k\ge 2]+\cdots+\mathbb P_k[X_n=j,T_k\ge n]\\
+        &=\mathbb E_k\left[ \sum_{m=1}^{\min\{n,T_k\}}1_{X_m=j} \right]\\
+        &=\mathbb E_k\left[ \sum_{m=0}^{\min\{n,T_k-1\}}1_{X_m=j} \right]\\
+        &\to \gamma_j^k,n\to\infty
+    \end{align*}
+    which proves the first part of the theorem.
+    Now define $\mu=\lambda-\gamma^k$ which is obviously also an invariant measure.
+    As $P$ is irreducible, for any $i$, there is some $n$ such that $p_{ik}^{(n)}>0$, therefore
+    $$0=\mu_k=\sum_{j=I}\mu_jp_{jk}^{(n)}\ge\mu_ip_{ik}^{(n)}\implies \mu_i=0$$
+    Hence $\mu=0$ which shows the second part.
+\end{proof}
+\begin{example}
+    1. The simple symmetric random walk on $\mathbb Z$ is clearly irreducible and recurrent.
+    The measure $\pi_i=1$ for all $i\in\mathbb Z$ is invariant.
+    By the theorem, every invariant measure are of the form $\pi_i=a$ for all $i\in\mathbb Z$ for some fixed $a$.
+    Consequently, there is no invariant distribution on this Markov chain.\\
+    2. (non-example) The simple symmetric random walk on $\mathbb Z^3$ has an invariant measure, but is not recurrent.
+\end{example}
+Note that a recurrent $i\in I$ does not necessarily have finite expected return time $m_i=\mathbb E_i[T_i]$.
+\begin{definition}
+    A recurrent state $i\in I$ is positive recurrent if $m_i<\infty$, and is null recurrent otherwise.
+\end{definition}
+\begin{theorem}
+    Let $P$ be irreducible, then the following are equivalent:\\
+    (a) Every state is positive recurrent.\\
+    (b) Some state is positive recurrent.\\
+    (c) $P$ admits an invariant distribution $\pi$.\\
+    Moreover, when (c) holds, then $m_i=1/\pi_i$.
+\end{theorem}
+\begin{proof}
+    (a) clearly implies (b).
+    Assuming (b) and choose positive recurrent $i\in I$.
+    Now $\gamma^i$ is an invariant measure and
+    $$\sum_{j\in I}\gamma_j^i=m_i<\infty$$
+    Therefore $\pi_j=\gamma_j^i/m_i$ defines an invariant distribution.\\
+    Assuming (c), then $\forall k\in I$, $\pi_k=\sum_{i\in I}\pi_ip_{ik}^{(n)}>0$ for some $n$ as $P$ is irreducible.
+    Fix any $k$ and set $\lambda_i=\pi_i/\pi_k$, then $\lambda$ is an invariant measure with $\lambda_k=1$, therefore $\lambda\ge\gamma^k$ by Theorem \ref{inv_measure_exp}.
+    So
+    $$m_k=\sum_{i\in I}\gamma_i^k\le\sum_{i\in I}\frac{\pi_i}{\pi_k}=\frac{1}{\pi_k}<\infty$$
+    which means $k$ is positive recurrent.
+    Also, this means that if (c) holds, then $P$ has to be recurrent and the inequality has to be equality, that is $m_k=1/\pi_k$.
+\end{proof}
+\begin{example}
+    There exists Markov chains with more than one linearly independent invariant measures.
+    Consider the general random walk on $\mathbb Z$ with $p_{i,i+1}=p,p_{i,i-1}=q=1-p$ where $p\notin \{0,1/2,1\}$.
+    Then the constant and $\pi_i=(p/q)^i$ are both invariant measures but they are linearly independent.
+\end{example}

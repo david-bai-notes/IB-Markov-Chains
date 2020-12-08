@@ -1,0 +1,38 @@
+\section{Another Application and Outlook}
+How can one obtain information about a Markov chain from the observations of it?
+Suppose $(X_i)_{i=0,\ldots,n}$ is given as observations.
+For any candidate $\tilde{P}=(\tilde{p}_{ij})$, we define
+$$l(\tilde{P})=\log(\tilde{p}_{X_0X_1}\tilde{p}_{X_1X_2}\cdots\tilde{p}_{X_{n-1}X_n})=\sum_{i,j\in I}N_{ij}(n)\tilde{p}_{ij}$$
+where $N_{ij}(n)=\sum_{m=0}^{n-1}1_{X_m=i,X_{m+1}=j}$.
+The maximum likelihood estimator $\hat{P}=\hat{P}(n)$ is the maximiser of $l$.
+\begin{lemma}
+    We have $\hat{p}_{ij}(n)=N_{ij}(n)/V_i(n)$ where like in the last section $V_i(n)=\sum_{k=0}^{n-1}1_{X_k=i}$.
+\end{lemma}
+\begin{proof}
+    Use your favourite optimisation method, like Lagrange multipliers.
+\end{proof}
+\begin{theorem}
+    If $P$ is positive recurrent, then
+    $$\mathbb P[\hat{p}_{ij}(n)\to p_{ij}\text{ as }n\to\infty]=1$$
+\end{theorem}
+\begin{proof}
+    Consider $N_{ij}=\sum_{m=1}^{V_i}Y_m$ where $Y_m$ is the indicator of the $m^{th}$ transition being from $i$ to $j$ and $V_i=V_i(\infty)$.
+    By the Markov property, $Y_i$ are i.i.d. with mean $p_{ij}$ and independent from $V_i$.
+    As $P$ is positive recurrent, $\mathbb P[V_i(n)\to\infty,n\to\infty]=1$, so the strong law of large numbers gives
+    $$\mathbb P\left[ \hat{p}_{ij}(n)=\frac{1}{V_i(n)}\sum_{i=1}^{V_i(n)}Y_i\to p_{ij}\text{ as }n\to\infty \right]=1$$
+    as desired.
+\end{proof}
+The course is basically finished here.
+We might as well take a outlook on the subject.\\
+For an aperiodic and irreducible finite-state Markov chain, we have seen that $\mathbb P[X_n=i]\to\pi_i$ as $n\to\infty$.
+Thus, conversely, to sample from a given distribution $\pi$ (on say $N$ states), one may try to find a Markov chain with $\pi$ as its invariant distribution and then run it for a long time.
+This is known as a Markov Chain Monte Carlo (MCMC) studies in the 50s by Metropolis \& Ulam.
+There are different ways to find such a Markov chain.
+The most famous one is Metropolis' algorithm originated from an article by Metropolis, Rosenbluth, Rosenbluth, Teller \& Teller (1953).
+We will not explain it here -- you can look it up elsewhere.\\
+There is another question of theoretical and practical relevance, which is the rate of this convergence.
+For example, we might want to know more about
+$$\min\{n:\sum_i|\mathbb P[X_n=i]-\pi_1|<\epsilon\}$$
+This depends very much on the particular structure of the Markov chain and is expected to be highly nontrivial.
+In fact, this is a subject of current research interest.\\
+There are other perspectives of Markov chains we can study, for example we can look at random walks on groups, or consider continuous time and mixing time of Markov chains.

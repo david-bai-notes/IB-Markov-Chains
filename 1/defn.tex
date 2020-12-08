@@ -1,0 +1,115 @@
+\section{Definitions and Basic Properties}
+We will make the following standing assumptions:
+First, the state space $I$ is a countable set which we will almost always label as $\{1,2,\ldots\}$.
+Also, we will be working in a probability space $(\Omega,\mathscr F,\mathbb P)$ where all relevant random variables are defined.
+\begin{definition}
+    A sequence of random variables $(X_n)_{n=0,1,\ldots}$ is a Markov chain if, for all $n\ge 0$ and $i_0,\ldots,i_{n+1}\in I$,
+    $$\mathbb P[X_{n+1}=i_{n+1}|X_0=i_0,\ldots,X_n=i_n]=\mathbb P[X_{n+1}=i_{n+1}|X_n=i_n]$$
+    given that these conditional probabilities are well-defined.\\
+    A Markov chain is homogeneous if for all $i,j\in I$,
+    $$\mathbb P[X_{n+1}=j|X_n=i]=\mathbb P[X_1=j|X_0=i]$$
+\end{definition}
+We are only interested in homogeneous Markov chains, so afterwards when we mention a Markov chain, we always mean a homogeneous one.\\
+Then, a Markov chain is characterised by the initial distribution $\lambda=(\lambda_i)_{i\in I}$ given by $\lambda_i=\mathbb P[X_0=i]$ and the transition matrix $P=(p_{ij})_{i,j\in I}$ with $p_{ij}=\mathbb P[X_1=j|X_0=i]$.\\
+Note that $\lambda$ is a distribution as $\lambda_i$ is always nonnegative and sums up to $1$.
+$P$, at the same time, is a stochastic matrix, i.e. $p_{ij}$ is a distribution for every $i\in I$.
+\begin{definition}
+    $(X_n)$ is a Markov chain with initial distribution $\lambda$ and transition matrix $P$, or $(X_n)\sim\operatorname{Markov}(\lambda,P)$ if the above properties hold.
+\end{definition}
+\begin{theorem}\label{markov_alt_defn}
+    $(X_n)\sim\operatorname{Markov}(\lambda,P)$ iff for all $n\ge 0$ and $i_0,\ldots,i_n\in I$,
+    $$\mathbb P[X_0=i_0,\ldots,X_n=i_n]=\lambda_{i_0}p_{i_0i_1}\cdots p_{i_{n-1}i_n}$$
+\end{theorem}
+Pretty obvious but let's write this out.
+\begin{proof}
+    Suppose $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then
+    \begin{align*}
+        &\phantom{=}\mathbb P[X_0=i_0,\ldots,X_n=i_n]\\
+        &=\mathbb P[X_n=i_n|X_0=i_0,\ldots,X_{n-1}=i_{n-1}]\mathbb P[X_0=i_0,\ldots,X_{n-1}=i_{n-1}]\\
+        &=\mathbb P[X_n=i_n|X_{n-1}=i_{n-1}]\mathbb P[X_0=i_0,\ldots,X_{n-1}=i_{n-1}]\\
+        &=p_{i_{n-1}i_n}\mathbb P[X_0=i_0,\ldots,X_{n-1}=i_{n-1}]\\
+        &=\cdots=\lambda_{i_0}p_{i_0i_1}\cdots p_{i_{n-1}i_n}
+    \end{align*}
+    Conversely, assume this is true, then set $n=0$ gives $\mathbb P[X_0=i_0]=\lambda_{i0}$, and that
+    \begin{align*}
+        \mathbb P[X_n=i_n|X_0=i_0,\ldots,X_{n-1}=i_{n-1}]&=\frac{\mathbb P[X_0=i_0,\ldots,X_n=i_n]}{\mathbb P[X_0=i_0,\ldots,X_{n-1}=i_{n-1}]}\\
+        &=p_{i_{n-1}i_n}\\
+        &=\mathbb P[X_n=i_n|X_{n-1}=i_{n-1}]
+    \end{align*}
+    which are exactly what we need.
+\end{proof}
+Let $\delta_i$ be the vector that has $1$ at $i^{th}$ entry and $0$ in other places.
+\begin{theorem}
+    Let $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then conditioning on $X_m=i$, $(X_{m+n})_{n\ge 0}\sim\operatorname{Markov}(\delta_i,P)$ and is independent of $X_0,\ldots,X_m$.
+\end{theorem}
+\begin{proof}
+    It suffices to show that\\
+    (i) $\mathbb P[X_m=i_m,\ldots,X_{m+n}=i_{m+n}|X_m=i]=\delta_{ii_m}p_{i_mi_{m+1}}\cdots p_{i_{m+n-1}i_{m+n}}$.\\
+    (ii) For every event $A$ determined by $X_1,\ldots,X_m$ and every event $B$ determined by $X_m,X_{m+1},\ldots$, we have
+    $$\mathbb P[A\cap B|X_m=i]=\mathbb P[A|X_m=i]\mathbb P[B|X_m=i]$$
+    In other words, ``independence of past and future given present''.\\
+    The previous theorem implies both for the elementary events
+    $$A=\{X_0=i_0,\ldots,X_m=i_m\},B=\{X_m=i_m,\ldots,X_{m+n}=i_{m+n}\}$$
+    Indeed, after multiplying the both sides by $\mathbb P[X_m=i]$, (i) becomes
+    $$\mathbb P[X_m=i_m,\ldots,X_{m+n}=i_{m+n}]=\delta_{ii_m}p_{i_mi_{m+1}}\cdots p_{i_{m+n-1}i_{m+n}}\mathbb P[X_m=i]$$
+    and (ii) becomes
+    $$\mathbb P[A\cap B]=\mathbb P[A]\mathbb P[B|X_m=i]=\delta_{ii_m}\mathbb P[A]\mathbb P[B]$$
+    which are obviously true due to the theorem.
+    Decomposing every events into elementary ones then proves the theorem.
+\end{proof}
+We say an array $(\lambda_i)$ as a distribution if $\sum_i\lambda_i=1$, and a measure if $\lambda_i\ge 0$ for all $i$.
+When we mention arrays like these, we always mean row vectors.
+\footnote{Staggering, I know.}
+We write $(P^n)_{ij}=P^{(n)}_{ij}$ as convention.
+When $\lambda_i>0$, we write $\mathbb P_i[A]=\mathbb P[A|X_0=i]$.
+So $(X_n)_{n\ge 0}\sim\operatorname{Markov}(\delta_i,P)$ under $\mathbb P_i$.
+\begin{theorem}
+    Let $(X_n)_{n\ge 0}\sim\operatorname{Markov}(\lambda,P)$.
+    Then for all $n,m\ge 0$, we have\\
+    (a) $\mathbb P[X_n=j]=(\lambda P^n)_j$.\\
+    (b) $\mathbb P_i[X_n=j]=p_{ij}^{(n)}$.
+\end{theorem}
+\begin{proof}
+    Obvious.
+\end{proof}
+\begin{example}
+    Consider the general two-state Markov chain with
+    $$P=\begin{pmatrix}
+        1-\alpha&\alpha\\
+        \beta&1-\beta
+    \end{pmatrix}$$
+    As $P^{n+1}=P^nP$, we have $p_{11}^{(n+1)}=p_{12}^{(n)}\beta+p_{11}^{(n)}(1-\alpha)$.
+    Also $p_{12}^{(n)}+p_{11}^{(n)}=1$, so $p_{11}^{(n+1)}=p_{11}^{(n)}(1-\alpha-\beta)+\beta$.
+    As one can verify oneself, this gives
+    $$p_{11}^n=\begin{cases}
+        \frac{\beta}{\alpha+\beta}+\frac{\alpha}{\alpha+\beta}(1-\alpha-\beta)^n\text{, if $\alpha+\beta>0$}\\
+        1\text{, if $\alpha+\beta=0$}
+    \end{cases}$$
+    And this basically told us the explicit formula of $P^n$, so this basic case of Markov chain can be solved easily.
+\end{example}
+The general method to compute the transition probability $p_{ij}^{(n)}$ for an $N$ state Markov chain is just as what we expect.
+First, compute the eigenvalues $\lambda_1,\ldots,\lambda_N$ of $P$.
+If the eigenvalues are all distinct, then $P$ is diagonalisable so we easily get
+$$p_{ij}^{(n)}=a_1\lambda_1^n+\cdots+a_N\lambda_N^n$$ for some constants $(a_k)$ depending on $i,j$.
+If an eigenvalue $\lambda_l$ has multiplicity $k$, we can simply replace $a_l$ by a degree $k$ polynomial in $n$.
+This can be justified by considering the Jordan Normal form of $P$.
+In general, the eigenvalues are not real numbers, but the values of $p_{ij}^{(n)}$ will are of course always real (and most of the times can be represented by trigonometric functions).
+\begin{example}
+    Consider the transition matrix
+    $$P=\begin{pmatrix}
+        &1&\\
+        &1/2&1/2\\
+        1/2&&1/2
+    \end{pmatrix}$$
+    We shall compute $p_{11}^{(n)}$.
+    Now $\det(\lambda I-P)=(\lambda-1)(4\lambda^2+1)/4$, so the eigenvalues are $1,i/2,-i/2$.
+    Therefore $p_{11}^{(n)}=a+b(i/2)^n+c(-i/2)^n$ for some constants $a,b,c$.
+    Observe that
+    $$\left(\pm\frac{i}{2}\right)^n=\frac{1}{2^n}\left(\cos\frac{\pi n}{2}\pm i\sin\frac{\pi n}{2}\right)$$
+    Therefore we can get rid of $i$ and write
+    $$p_{11}^{(n)}=\alpha+\frac{1}{2^n}\left[\beta\cos\frac{\pi n}{2}+\gamma\sin\frac{\pi n}{2}\right]$$
+    for some constants $\alpha,\beta,\gamma$.
+    Plugging in initial values reveals that $\alpha=1/5,\beta=4/5,\gamma=-2/5$, so
+    $$p_{11}^{(n)}=\frac{1}{5}+\frac{1}{2^n}\left[\frac{4}{5}\cos\frac{\pi n}{2}-\frac{2}{5}\sin\frac{\pi n}{2}\right]$$
+\end{example}
+Now we can compute many data out of a Markov chain, but as good mathematicians we realise that there can be more properties in a Markov chain that can be explored.

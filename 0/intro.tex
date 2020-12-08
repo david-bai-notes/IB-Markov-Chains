@@ -1,0 +1,63 @@
+\section{Introduction}
+A Markov chain consists of a state space and a set of probabilities of going from a state to another.
+We can either draw the transition as a directed graph with probability labels, or we can write out the transition matrix, with the $i,j$ entry taken to be the probability of going from state $i$ to state $j$.
+For example, we can take the state space as $\{1,2,3\}$ with transition rules drawn as the following graph:
+\begin{center}
+    \begin{tikzpicture}
+        \node[state] at (0,2) (1){$1$};
+        \node[state] at (1.4,0) (2){$2$};
+        \node[state] at (-1.4,0) (3){$3$};
+
+        \draw[every loop]
+        (1) edge[auto=left] node {$1$} (2)
+        (3) edge[auto=left] node {$1/2$} (1)
+        (2) edge[loop right] node {$2/3$} (2)
+        (3) edge[bend left, auto=left] node {$1/2$} (2)
+        (2) edge[bend left, auto=right] node {$1/3$} (3);
+    \end{tikzpicture}
+\end{center}
+It then has transition matrix
+$$\begin{pmatrix}
+    &1&\\
+    &2/3&1/3\\
+    1/2&1/2&
+\end{pmatrix}$$
+Obvious we want the sum of each row to be $1$ as you have to transit somewhere (including your current location) from where you were.\\
+We can have a more involved example.
+Consider the state space $\{0,\ldots,6\}$ with transition rules
+\begin{center}
+    \begin{tikzpicture}
+        \node[state] at (0,-0.5) (0){$0$};
+        \node[state] at (-2,0) (1){$1$};
+        \node[state] at (-4,0) (2){$2$};
+        \node[state] at (-3,2) (3){$3$};
+        \node[state] at (2,0) (4){$4$};
+        \node[state] at (4,0) (5){$5$};
+        \node[state] at (3,2) (6){$6$};
+
+        \draw[every loop]
+        (0) edge[auto=right] node {$1/5$} (4)
+        (4) edge[auto=right] node {$1$} (5)
+        (5) edge[auto=right] node {$1$} (6)
+        (6) edge[auto=right] node {$1$} (4)
+        (0) edge[auto=left] node {$3/5$} (1)
+        (1) edge[bend left, auto=left] node {$1$} (2)
+        (2) edge[bend left, auto=left] node {$1/3$} (1)
+        (2) edge[auto=left] node {$2/3$} (3)
+        (3) edge[auto=left] node {$1$} (1)
+        (0) edge[loop above] node {$1/5$} (0);
+    \end{tikzpicture}
+\end{center}
+There are many questions we can ask about a Markov chain.
+For example, what is the probability of hitting one node from another eventually?
+In the example above, some are obvious:
+The probability of hitting $6$ eventually from $0$ is $1/5+(1/5)^2+\cdots=1/4$, and the probability of hitting $3$ eventually from $0$ is actually $1$.\\
+We can ask other questions.
+For example, what is the average number of steps to get from $1$ to $3$?
+This turns out to be $3$.
+Also, what is the long-run proportion of time to spend on $2$ if one starts at $1$?
+It is $3/8$ as one can verify.\\
+Throughout this course, we will attempt to come up with systematic ways to compute these things for a given Markov chain.\\
+Another thing to observe is that in this specific example, we can group the states into three groups: $\{0\},\{1,2,3\}$ and $\{4,5,6\}$.
+One can see that we cannot leave a group and go back with positive probability.
+We call these communicating classes of a Markov chain.

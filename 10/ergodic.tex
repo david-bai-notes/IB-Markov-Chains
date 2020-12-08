@@ -1,0 +1,59 @@
+\section{The Ergodic Theorem}
+We want to study the long-term average behaviour of a Markov chain.
+Recall the strong law of large numbers:
+\begin{theorem}[Strong Law of Large Numbers]
+    Let $(Y_i)_{i=0,1,\ldots}$ be a sequence of i.i.d. non-negative random variables, with $\mathbb EY_i=\mu\in[0,\infty]$, then
+    $$\mathbb P\left[ \frac{Y_1+\cdots+Y_n}{n}\to\mu\text{ as }n\to\infty \right]=1$$
+\end{theorem}
+\begin{proof}
+    Omitted.
+\end{proof}
+The ergodic theorem is a sorta similar thing, but with some twists.
+Write $V_i(n)=\sum_{k=0}^{n-1}1_{X_k=i}$ as the number of visits to $i$ before $n^{th}$ step, then
+\begin{theorem}[Ergodic Theorem]\label{ergodic}
+    Let $P$ be irreducible and $\lambda$ be any distribution.
+    Take a Markobv chain $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then
+    $$\mathbb P\left[ \frac{V_i(n)}{n}\to\frac{1}{m_i}\text{ as }n\to\infty \right]=1$$
+\end{theorem}
+\begin{remark}
+    1. This does not follow directly from the law of large numbers as $1_{X_k=i}$ are not i.i.d. random variables.\\
+    2. In particular, if $P$ is positive recurrent, then we know that $\pi_i=1/m_i$, so it translated to
+    $$\mathbb P\left[ \frac{V_i(n)}{n}\to\pi_i\text{ as }n\to\infty \right]=1$$
+    which is pretty intuitive.
+\end{remark}
+\begin{proof}
+    If $P$ is transient, then $\mathbb P[V_i<\infty]=1$ where $V_i=\sum_{k=0}^\infty 1_{X_n=i}$ is the total number visits to $i$.
+    Therefore $m_i=\infty$ for any $i$, which means
+    $$\mathbb P\left[ \frac{V_i(n)}{n}\le\frac{V_i}{n}\to 0=\frac{1}{m_i} \right]=1$$
+    as desired.
+    If $P$ is recurrent and $\lambda=\delta_i$, we shall show that
+    $$\mathbb P\left[ \frac{n}{V_i(n)}\to m_i\text{ as }n\to\infty \right]=1$$
+    Let $S_i^{(r)}$ be the $r^{th}$ excursion length between visits to $i$.
+    We know $S_i^{(1)},S_i^{(2)},\ldots$ are i.i.d. from Theorem \ref{strong_markov}.
+    Also $\mathbb ES_i^{(r)}=m_i$, so by strong law of large numbers,
+    $$\mathbb P_i\left( \frac{S_i^{(1)}+\cdots S_i^{(n)}}{n}\to m_i\text{ as }n\to\infty \right)$$
+    To see this implies what we want, note that $S_i^{(1)}+\cdots S_i^{(V_i(n))}\ge n$ and $S_i^{(1)}+\cdots S_i^{(V_i(n)-1)}\le n-1$, so by dividing both sides of both inequalities by $V_i(n)$ and using $\mathbb P[V_i(n)\to\infty]=1$, we get the desired result.\\
+    For the general case for a recurrent $P$, note that we have $\mathbb P[T_i<\infty]=1$.
+    Therefore consider $(X_{T_i+n})_{n\ge 0}\sim\operatorname{Markov}(\delta_i,P)$ by Theorem \ref{strong_markov}.
+    It is indepenedent of $X_0,\ldots,X_{T_i}$ by the same theorem.
+    The result then follows since the limit of $V_i(n)/n$ as $n\to\infty$ is not affected if $(X_n)_{n\ge 0}$ is replaced by $(X_{T_i+n})_{n\ge 0}$.
+\end{proof}
+\begin{corollary}
+    In the case where $P$ is positive recurrent, for any bounded function $f:I\to\mathbb R$,
+    $$\mathbb P\left[ \frac{1}{n}\sum_{k=0}^{n-1}f(X_k)\to\bar{f}\text{ as }n\to\infty\right]=1,\bar{f}=\sum_{i\in I}\pi_if(i)$$
+\end{corollary}
+This gives us ways to estimate the theorectical average of $f$ in the Markov chain by observing how it runs.
+\begin{proof}
+    WLOG $|f|\le 1$.
+    Then for any $J\subset I$ we have
+    \begin{align*}
+        \left|\frac{1}{n}\sum_{k=0}^{n-1}f(X_k)-\bar f\right|&=\left|\sum_{i\in I}\left( \frac{V_i(n)}{n}-\pi_i \right) f(i)\right|\\
+        &\le \sum_{i\in J}\left|\frac{V_i(n)}{n}-\pi_i\right|+\sum_{i\notin J}\left( \frac{V_i(n)}{n}+\pi_i \right)\\
+        &\le 2\sum_{i\in J}\left|\frac{V_i(n)}{n}-\pi_i\right|+2\sum_{i\notin J}\pi_i
+    \end{align*}
+    For any $\epsilon>0$ choose $J\subset I$ finite such that $\sum_{i\notin J}\pi_i<\epsilon$ (for example just take $J=I$) and a random variable $N=N(\omega)$ large enough such that
+    $$\mathbb P\left[ \sum_{i\in J}\left|\frac{V_i(n)}{n}-\pi_i\right|<\epsilon\text{ for }n\ge N \right]=1$$
+    Therefore
+    $$\mathbb P\left[ \left|\frac{1}{n}\sum_{k=0}^{n-1}f(X_k)-\bar f\right|<4\epsilon\text{ for }n\ge N \right]=1$$
+    which shows the theorem.
+\end{proof}

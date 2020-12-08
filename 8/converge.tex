@@ -1,0 +1,89 @@
+\section{Converge to Equilibrium}
+Theorem \ref{power_inv} tells us that we might be able to obtain an invariant measure of a Markov chain by looking at the limit $p_{ij}^{(n)}$ as $n\to\infty$.
+Of course, this does not always work.
+\begin{example}[Non-example]
+    Take
+    $$P=\begin{pmatrix}
+        0&1\\
+        1&0
+    \end{pmatrix}$$
+    then $P^n$ does not converge as $n\to\infty$ but it has an invariant distribution $(1/2,1/2)$.
+    This is an example of what is called a periodic Markov chain.
+\end{example}
+But we want to find cases where it does work.
+The previous example motivates the following definition.
+\begin{definition}
+    A state $i\in I$ is aperiodic if $p_{ii}^{(n)}>0$ for sufficiently large $n$.
+    $P$ is periodic if all $i\in I$ are periodic.
+\end{definition}
+\begin{lemma}
+    Let $P$ be irreducible and some $i\in I$ is aperiodic, then for all $j,k\in I$, $p_{jk}^{(n)}>0$ for sufficiently large $n$.
+\end{lemma}
+In particular, in an irreducible Markov chain, one state being aperiodic implies all states being aperiodic.
+\begin{proof}
+    Choose $r,s$ such that $p_{ji}^{(r)}>0$ and $p_{ik}^{(s)}>0$.
+    Then
+    $$p_{jk}^{(r+n+s)}\ge p_{ji}^{(r)}p_{ii}^{(n)}p_{ik}^{(s)}>0$$
+    for sufficiently large $n$.
+\end{proof}
+Here we are ready to state our main theorem.
+\begin{theorem}\label{aperiodic_conv}
+    Let $P$ be irreducible and aperiodic and suppose $\pi$ is an invariant distribution for $P$.
+    Let $\lambda$ be any distribution and suppose $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then for all $j\in I$ we have $\mathbb P[X_n=j]\to\pi_j$ as $n\to\infty$.
+\end{theorem}
+In particular, $p_{ij}^{(n)}\to\pi_j$ as $n\to\infty$ for any $i,j\in I$.
+The proof uses a very interesting trick called coupling.
+Behold.
+\begin{proof}
+    Let $(Y_n)\sim\operatorname{Markov}(\pi,P)$ and independent of $(X_n)$.
+    Fix a reference state $b\in I$ and set $T=\inf\{n\ge 1:X_n=Y_n=b\}$.
+    We claim that $\mathbb P[T<\infty]=1$.
+    Now $W_n=(X_n,Y_n)$ is a Markov chain $\tilde{P}$ on the state space $I\times I$ and the transition probability is obviously
+    $$\tilde{p}_{(i,k)(j,l)}=p_{ij}p_{kl}$$
+    with initial distribution $\tilde{\lambda}_{(i,k)}=\lambda_i\pi_k$.
+    As $P$ is irreducible and aperiodic, the preceding lemma implies that $\tilde{p}_{(i,k)(j,l)}^{(n)}>0$ for sufficiently large $n$.
+    In particular, $\tilde{P}$ is irreducible.
+    Also, it has invariant distribution $\tilde{\pi}_{(i,k)}=\pi_i\pi_k$, which implies that $\tilde{P}$ is positive recurrent.
+    In addition $T$ is the first passage time of $(W_n)$ to $(b,b)$.
+    Since $P$ is irreducible and recurrent, $\mathbb P[T<\infty]=1$ as desired.
+    It follows that, by Theorem \ref{strong_markov},
+    \begin{align*}
+        \mathbb P[X_n=i]&=\mathbb P[X_n=i,n<T]+\mathbb P[X_n=i,n\ge T]\\
+        &=\mathbb P[X_n=i,n<T]+\mathbb P[Y_n=i,n\ge T]\\
+        &=\mathbb P[X_n=i,n<T]+\pi_i-\mathbb P[Y_n=i,n< T]
+    \end{align*}
+    Therefore by rearranging,
+    \begin{align*}
+        |\mathbb P[X_n=i]-\pi_i|&=|\mathbb P[X_n=i,n<T]-\mathbb P[Y_n=i,n< T]|\\
+        &\le\mathbb P[n<T]\to 0
+    \end{align*}
+    as $n\to\infty$ since $\mathbb P[T<\infty]=1$.
+\end{proof}
+What would go wrong if the Markov chain is not aperiodic?
+\begin{example}
+    Take as usual
+    $$P=\begin{pmatrix}
+        0&1\\
+        1&0
+    \end{pmatrix}$$
+    We know that $\pi=(1/2,1/2)$ is an invariant distribution.
+    If $X\sim\operatorname{Markov}(\delta_0,P)$ and $Y\sim\operatorname{Markov}(\pi,P)$, then $X_n,Y_n$ will never meet.
+\end{example}
+We want to get a grip of what happens when $X_n$ is periodic (i.e. not aperiodic).
+We will not include proofs as they are not in the scope of this course, but we will state some results and the ones who are interested can find out further in J. R. Norris's book.
+\begin{lemma}
+    Let $P$ be irreducible.
+    There exists an integer $d\ge 1$ and a partition $I=C_0\cup\cdots\cup C_{d-1}$ such that:\\
+    1. $p_{ij}^{(n)}>0$ only if $i\in C_r$ and $j\in C_{r+n}$ for some $r$ where the indices of $C_k$ are taken modulo $d$.\\
+    2. For any $r$ and $i,j\in C_r$ we have $p_{ij}^{(nd)}>0$ for sufficiently large $n$.
+\end{lemma}
+Such a $d$ is called the period of a periodic markov chain.
+The $d=1$ case corresponds to the aperiodic case.
+\begin{theorem}
+    Let $P$ be irreducible of period $d$ with $C_0,\ldots, C_{d-1}$ as in the preceding lemma.
+    Let $\lambda$ be a distribution with $\sum_{i\in C_0}\lambda_i=1$.
+    Suppose $(X_n)\sim\operatorname{Markov}(\lambda,P)$, then for $r=0,\ldots,d-1$ and $j\in C_r$,
+    $$\mathbb P[X_{nd+r}=j]\to\frac{d}{m_j}$$
+    as $n\to\infty$ where $m_j$ is the expected return time to $j$.
+\end{theorem}
+This is a pretty intuitive generalisation of Theorem \ref{aperiodic_conv} by setting $d=1$.
